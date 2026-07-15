@@ -1,0 +1,134 @@
+openapi: 3.0.3
+info:
+  title: API Bibliothèque HEI
+  version: 1.0.0
+  description: Gestion des livres et des emprunts
+servers:
+  - url: https://api.hei.school/v1
+  - url: https://staging.hei.school/v1
+    description: Environnement de test
+paths:
+  /livres:
+    get:
+      summary: Lister les livres
+      parameters:
+        - name: page
+          in: query
+          description: Numéro de la page à récupérer
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Nombre maximum de livres par page
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Liste des livres
+    post:
+      summary: Créer un livre
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - titre
+              properties:
+                titre:
+                  type: string
+                auteur:
+                  type: string
+      responses:
+        '201':
+          description: Livre créé
+        '422':
+          description: Données invalides
+
+  /livres/{id}:
+    get:
+      summary: Lire un livre
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Livre trouvé
+        '404':
+          description: Livre introuvable
+
+    put:
+      summary: Remplacer un livre
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - titre
+              properties:
+                titre:
+                  type: string
+                auteur:
+                  type: string
+      responses:
+        '200':
+          description: Livre mis à jour
+        '404':
+          description: Livre introuvable
+        '422':
+          description: Données invalides
+
+    patch:
+      summary: Modifier partiellement un livre
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titre:
+                  type: string
+                auteur:
+                  type: string
+      responses:
+        '200':
+          description: Livre mis à jour
+        '404':
+          description: Livre introuvable
+        '422':
+          description: Données invalides
+
+    delete:
+      summary: Supprimer un livre
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Livre supprimé avec succès (sans corps de retour)
+        '404':
+          description: Livre introuvable
