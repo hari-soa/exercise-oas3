@@ -1,0 +1,31 @@
+openapi: 3.1.0
+info:
+  title: API Bibliothèque HEI
+  description: Gestion de livres et des emprunts
+  version: 1.0.0
+
+servers:
+  - url: https://api.hei.school/v1
+  - url: https://staging.hei.school/v1
+    description: Environnement de test
+paths:
+  /livres:
+    get:
+      summary: Lister les livres
+      responses:
+        '200':
+          description: Livre trouvé
+
+  /livres/{id}:
+    get:
+      summary: Lister les livres
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: {integer}
+
+      responses:
+        '200':
+          description: Livre trouvé
+  
