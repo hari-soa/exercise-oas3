@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 openapi: 3.1.0
+=======
+openapi: 3.0.3
+>>>>>>> 1c7da2790b7d613b8ff4fec56f4d763bca9b0982
 info:
   title: API Bibliothèque HEI
   version: 1.0.0
