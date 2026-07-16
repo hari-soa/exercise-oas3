@@ -59,9 +59,75 @@ paths:
             type: {integer}
           required: true
 
+    put:
+      summary: Remplacer un livre
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - titre
+              properties:
+                titre:
+                  type: string
+                auteur:
+                  type: string
+
       responses:
         '200':
           description: Livre
 
         '404' :
+          description: Livre introuvable
+
+        '422':
+          description: Données invalides
+
+    patch:
+      summary: Modifier partiellement un livre
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titre:
+                  type: string
+                auteur:
+                  type: string
+      responses:
+        '200':
+          description: Livre mis à jour
+        '404':
+          description: Livre introuvable
+        '422':
+          description: Données invalides
+
+    delete:
+      summary: Supprimer un livre
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Livre supprimé avec succès (sans corps de retour)
+        '404':
           description: Livre introuvable
