@@ -135,7 +135,10 @@ components:
       properties:
         id:
           type: integer
+          example: 42
         titre:
           type: string
+          example: "Dadabe"
         auteur:
           type: string
+          example: "Jean-Joseph Rabearivelo"

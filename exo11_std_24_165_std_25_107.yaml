@@ -48,6 +48,10 @@ paths:
           description: Livre créé
         "422":
           description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
 
   /livres/{id}:
     get:
@@ -67,6 +71,10 @@ paths:
                 $ref: "#/components/schemas/Livre"
         "404":
           description: Livre introuvable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
 
     put:
       summary: Remplacer un livre
@@ -87,8 +95,16 @@ paths:
           description: Livre mis à jour
         "404":
           description: Livre introuvable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
         "422":
           description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
 
     patch:
       summary: Modifier partiellement un livre
@@ -109,8 +125,16 @@ paths:
           description: Livre mis à jour partiellement
         "404":
           description: Livre introuvable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
         "422":
           description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
 
     delete:
       summary: Supprimer un livre
@@ -125,6 +149,10 @@ paths:
           description: Livre supprimé avec succès (sans corps de retour)
         "404":
           description: Livre introuvable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
 
 components:
   schemas:
@@ -135,7 +163,25 @@ components:
       properties:
         id:
           type: integer
+          example: 42
         titre:
           type: string
+          example: "Dadabe"
         auteur:
           type: string
+          example: "Jean-Joseph Rabearivelo"
+    Erreur:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "https://api.hei.school/errors/not-found"
+        title:
+          type: string
+          example: "Ressource introuvable"
+        status:
+          type: integer
+          example: 404
+        detail:
+          type: string
+          example: "Le livre demandé avec l'identifiant renseigné n'existe pas."

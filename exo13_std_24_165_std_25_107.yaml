@@ -9,6 +9,9 @@ servers:
   - url: https://staging.hei.school/v1
     description: Environnement de test
 
+security:
+  - bearerAuth: []
+
 paths:
   /livres:
     get:
@@ -48,6 +51,10 @@ paths:
           description: Livre créé
         "422":
           description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
 
   /livres/{id}:
     get:
@@ -67,6 +74,10 @@ paths:
                 $ref: "#/components/schemas/Livre"
         "404":
           description: Livre introuvable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
 
     put:
       summary: Remplacer un livre
@@ -87,8 +98,16 @@ paths:
           description: Livre mis à jour
         "404":
           description: Livre introuvable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
         "422":
           description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
 
     patch:
       summary: Modifier partiellement un livre
@@ -109,8 +128,16 @@ paths:
           description: Livre mis à jour partiellement
         "404":
           description: Livre introuvable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
         "422":
           description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
 
     delete:
       summary: Supprimer un livre
@@ -125,8 +152,62 @@ paths:
           description: Livre supprimé avec succès (sans corps de retour)
         "404":
           description: Livre introuvable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
+
+  /livres/{id}/emprunts:
+    get:
+      summary: Lister les emprunts pour un livre spécifique
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID du livre concerné
+      responses:
+        "200":
+          description: Liste des emprunts liés au livre
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Emprunt"
+        "404":
+          description: Livre introuvable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
+
+  /emprunts:
+    post:
+      summary: Enregistrer un nouvel emprunt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Emprunt"
+      responses:
+        "201":
+          description: Emprunt créé avec succès
+        "422":
+          description: Données d'emprunt invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erreur"
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Livre:
       type: object
@@ -135,7 +216,45 @@ components:
       properties:
         id:
           type: integer
+          example: 42
         titre:
           type: string
+          example: "Dadabe"
         auteur:
           type: string
+          example: "Jean-Joseph Rabearivelo"
+    Erreur:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "https://api.hei.school/errors/not-found"
+        title:
+          type: string
+          example: "Ressource introuvable"
+        status:
+          type: integer
+          example: 404
+        detail:
+          type: string
+          example: "Le livre demandé avec l'identifiant renseigné n'existe pas."
+    Emprunt:
+      type: object
+      required:
+        - livreId
+        - dateEmprunt
+      properties:
+        id:
+          type: integer
+          example: 101
+        livreId:
+          type: integer
+          example: 42
+        dateEmprunt:
+          type: string
+          format: date
+          example: "2026-07-15"
+        dateRetour:
+          type: string
+          format: date
+          example: "2026-08-15"
