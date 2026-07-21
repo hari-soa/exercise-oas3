@@ -1,0 +1,188 @@
+openapi: 3.0.3
+info:
+  title: API Cours HEI
+  version: 1.0.0
+servers:
+  - url: https://api.hei.school/v1
+
+tags:
+  - name: Cours
+    description: Gestion des cours dispensés à HEI
+
+security:
+  - bearerAuth: []
+
+paths:
+  /cours:
+    get:
+      tags:
+        - Cours
+      summary: Lister les cours avec pagination
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: Numéro de la page demandée
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+          description: Nombre d'éléments par page
+      responses:
+        '200':
+          description: Liste paginée des cours
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cours'
+    post:
+      tags:
+        - Cours
+      summary: Créer un nouveau cours
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cours'
+      responses:
+        '201':
+          description: Cours créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cours'
+        '422':
+          $ref: '#/components/responses/422UnprocessableEntity'
+
+  /cours/{id}:
+    get:
+      tags:
+        - Cours
+      summary: Obtenir un cours par son ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Cours trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cours'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+    put:
+      tags:
+        - Cours
+      summary: Remplacer un cours
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cours'
+      responses:
+        '200':
+          description: Cours mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cours'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '422':
+          $ref: '#/components/responses/422UnprocessableEntity'
+    delete:
+      tags:
+        - Cours
+      summary: Supprimer un cours
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Cours supprimé avec succès
+        '404':
+          $ref: '#/components/responses/404NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Cours:
+      type: object
+      required:
+        - code
+        - intitule
+      properties:
+        id:
+          type: integer
+          example: 1
+        code:
+          type: string
+          example: "PROG2"
+        intitule:
+          type: string
+          example: "Programmation orientée objet et API"
+        credits:
+          type: integer
+          example: 6
+
+    Erreur:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - detail
+      properties:
+        type:
+          type: string
+          example: "https://api.hei.school/errors/not-found"
+        title:
+          type: string
+          example: "Ressource non trouvée"
+        status:
+          type: integer
+          example: 404
+        detail:
+          type: string
+          example: "Le cours avec l'identifiant spécifié n'existe pas."
+
+  responses:
+    404NotFound:
+      description: Ressource non trouvée
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erreur'
+    422UnprocessableEntity:
+      description: Entité non traitable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erreur'

@@ -1,0 +1,51 @@
+openapi: 3.0.3
+info:
+  title: API Bibliothèque
+  version: 1.0.0
+servers:
+  - url: https://api.bibliotheque.org/v1
+
+paths:
+  /reservations/{reservationId}:
+    put:
+      summary: Créer ou remplacer une réservation
+      description: >
+        L'utilisation de PUT avec un ID fourni par le client (ex. UUID) rend l'opération idempotente : si le client renvoie la requête suite à une perte de connexion réseau, le serveur traitera le rejeu comme la création de la même ressource ou son remplacement, garantissant ainsi qu'aucun doublon n'est créé.
+      parameters:
+        - name: reservationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "d3b07384-d113-424a-a567-d6e3c6b2ba62"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+      responses:
+        '200':
+          description: Réservation posée ou confirmée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        '422':
+          description: Données de réservation invalides
+
+components:
+  schemas:
+    Reservation:
+      type: object
+      required:
+        - livreId
+        - usagerId
+      properties:
+        livreId:
+          type: integer
+          example: 42
+        usagerId:
+          type: integer
+          example: 108

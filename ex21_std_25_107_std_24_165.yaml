@@ -1,0 +1,118 @@
+openapi: 3.0.3
+info:
+  title: API Bibliothèque - Version Assainie
+  version: 1.0.0
+servers:
+  - url: https://api.bibliotheque.org/v1
+
+paths:
+  /livres/{id}:
+    put:
+      summary: Remplacer intégralement un livre
+      description: Remplace complètement la ressource Livre pour garantir l'idempotence.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Livre'
+      responses:
+        '200':
+          description: Livre mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Livre'
+        '404':
+          description: Livre non trouvé
+        '422':
+          description: Données invalides
+
+  /livres/{id}/note:
+    put:
+      summary: Poser ou remplacer la note attribuée à un livre
+      description: Remplace l'évaluation attribuée.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Note'
+      responses:
+        '200':
+          description: Note mise à jour
+        '404':
+          description: Livre non trouvé
+        '422':
+          description: Valeur de note invalide
+
+  /livres/{id}/favori:
+    put:
+      summary: Définir l'état favori d'un livre
+      description: Définit explicitement si le livre est marqué en favori ou non.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Favori'
+      responses:
+        '200':
+          description: État favori enregistré
+        '404':
+          description: Livre non trouvé
+        '422':
+          description: Données invalides
+
+components:
+  schemas:
+    Livre:
+      type: object
+      required:
+        - titre
+        - auteur
+      properties:
+        titre:
+          type: string
+          example: "Les Misérables"
+        auteur:
+          type: string
+          example: "Victor Hugo"
+
+    Note:
+      type: object
+      required:
+        - valeur
+      properties:
+        valeur:
+          type: integer
+          minimum: 0
+          maximum: 5
+          example: 5
+
+    Favori:
+      type: object
+      required:
+        - favori
+      properties:
+        favori:
+          type: boolean
+          example: true

@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: API Bibliothèque
+  version: 1.0.0
+servers:
+  - url: https://api.bibliotheque.org/v1
+
+paths:
+  /livres/{id}/disponibilite:
+    put:
+      summary: Mettre à jour l'état de disponibilité du livre
+      description: >
+        Le remplacement complet de la sous-ressource disponibilité via PUT est idempotent car réexécuter la même requête plusieurs fois produit exactement le même état final sur le serveur sans créer d'effets de bord imprévus.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Disponibilite'
+      responses:
+        '200':
+          description: Disponibilité mise à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Disponibilite'
+        '404':
+          description: Livre non trouvé
+        '422':
+          description: Données invalides
+
+components:
+  schemas:
+    Disponibilite:
+      type: object
+      required:
+        - disponible
+      properties:
+        disponible:
+          type: boolean
+          example: false
+        motif:
+          type: string
+          example: "Emprunté jusqu'au 15 août"
